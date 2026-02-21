@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Александр Морозов — Ментор по Системному Анализу</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav__logo">АМ</div>
+    <ul class="nav__links">
+      <li><a href="#about">Обо мне</a></li>
+      <li><a href="#programs">Программы</a></li>
+      <li><a href="#results">Результаты</a></li>
+      <li><a href="#pricing">Инвестиции</a></li>
+      <li><a href="#contact" class="nav__cta">Записаться</a></li>
+    </ul>
+    <div class="nav__burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <div class="hero__particles" id="particles"></div>
+      <div class="hero__gradient"></div>
+    </div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Ментор · Системный Аналитик · Эксперт</p>
+      <h1 class="hero__title">
+        Системный анализ —<br />
+        <em>путь от хаоса</em><br />
+        к ясности
+      </h1>
+      <p class="hero__subtitle">
+        Я помогаю аналитикам и продактам выстроить системное мышление,
+        перейти в топ-компании и получать оффер мечты за 3–6 месяцев.
+      </p>
+      <div class="hero__actions">
+        <a href="#contact" class="btn btn--gold">Получить консультацию</a>
+        <a href="#programs" class="btn btn--outline">Смотреть программы</a>
+      </div>
+      <div class="hero__stats">
+        <div class="stat">
+          <span class="stat__num" data-target="200">0</span><span class="stat__plus">+</span>
+          <span class="stat__label">Выпускников</span>
+        </div>
+        <div class="stat__divider"></div>
+        <div class="stat">
+          <span class="stat__num" data-target="94">0</span><span class="stat__plus">%</span>
+          <span class="stat__label">Получили оффер</span>
+        </div>
+        <div class="stat__divider"></div>
+        <div class="stat">
+          <span class="stat__num" data-target="8">0</span><span class="stat__plus">+</span>
+          <span class="stat__label">Лет в индустрии</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scroll">
+      <span>Прокрутите вниз</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <p class="logos__label">Мои выпускники работают в</p>
+    <div class="logos__track">
+      <div class="logos__strip">
+        <span>Яндекс</span>
+        <span>Сбер</span>
+        <span>VK</span>
+        <span>Tinkoff</span>
+        <span>МТС</span>
+        <span>Ozon</span>
+        <span>Авито</span>
+        <span>X5 Tech</span>
+        <span>Яндекс</span>
+        <span>Сбер</span>
+        <span>VK</span>
+        <span>Tinkoff</span>
+        <span>МТС</span>
+        <span>Ozon</span>
+        <span>Авито</span>
+        <span>X5 Tech</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__image-wrap">
+          <div class="about__image-frame">
+            <div class="about__image-placeholder">
+              <div class="about__monogram">АМ</div>
+            </div>
+          </div>
+          <div class="about__badge">
+            <span class="about__badge-num">8+</span>
+            <span class="about__badge-text">лет опыта</span>
+          </div>
+        </div>
+        <div class="about__content">
+          <p class="section-eyebrow">Обо мне</p>
+          <h2 class="section-title">Я превращаю хаос требований<br /><em>в архитектуру систем</em></h2>
+          <p class="about__text">
+            Более 8 лет я работал системным аналитиком и архитектором в ведущих технологических компаниях России.
+            Прошёл путь от джуна до Principal SA в Яндексе, участвовал в запуске продуктов с аудиторией 10+ млн пользователей.
+          </p>
+          <p class="about__text">
+            Сегодня я помогаю начинающим и практикующим аналитикам выстроить системное мышление,
+            освоить современные практики и уверенно идти на собеседования в топовые компании.
+          </p>
+          <div class="about__pillars">
+            <div class="pillar">
+              <div class="pillar__icon">◈</div>
+              <div>
+                <h4>Системное мышление</h4>
+                <p>UML, BPMN, DDD, Event Storming</p>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar__icon">◈</div>
+              <div>
+                <h4>Работа с требованиями</h4>
+                <p>Use Cases, User Stories, SRS</p>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar__icon">◈</div>
+              <div>
+                <h4>Интеграции и API</h4>
+                <p>REST, gRPC, AsyncAPI, OpenAPI</p>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar__icon">◈</div>
+              <div>
+                <h4>Карьерный рост</h4>
+                <p>Резюме, собеседования, оффер</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section class="programs" id="programs">
+    <div class="container">
+      <p class="section-eyebrow text-center">Программы</p>
+      <h2 class="section-title text-center">Выберите свой<br /><em>формат работы</em></h2>
+      <div class="programs__grid">
+
+        <div class="program-card">
+          <div class="program-card__tag">Старт</div>
+          <h3 class="program-card__title">Экспресс-диагностика</h3>
+          <p class="program-card__duration">1 встреча · 90 минут</p>
+          <p class="program-card__desc">
+            Разберём ваш текущий уровень, выявим точки роста и составим индивидуальный план развития.
+          </p>
+          <ul class="program-card__features">
+            <li>Аудит вашего портфолио и резюме</li>
+            <li>Карта пробелов в знаниях</li>
+            <li>Персональный roadmap</li>
+            <li>Запись встречи + материалы</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline-dark">Записаться</a>
+        </div>
+
+        <div class="program-card program-card--featured">
+          <div class="program-card__tag">Популярно</div>
+          <h3 class="program-card__title">Менторинг «Системный аналитик»</h3>
+          <p class="program-card__duration">3 месяца · 24 встречи</p>
+          <p class="program-card__desc">
+            Интенсивная программа для перехода в системный анализ или роста до Middle/Senior уровня.
+          </p>
+          <ul class="program-card__features">
+            <li>2 встречи в неделю по 60 мин</li>
+            <li>Практические задания на реальных кейсах</li>
+            <li>Подготовка к техническим интервью</li>
+            <li>Работа с резюме и LinkedIn</li>
+            <li>Сопровождение до оффера</li>
+            <li>Чат поддержки 24/7</li>
+          </ul>
+          <a href="#contact" class="btn btn--gold">Начать программу</a>
+        </div>
+
+        <div class="program-card">
+          <div class="program-card__tag">Для компаний</div>
+          <h3 class="program-card__title">Корпоративное обучение</h3>
+          <p class="program-card__duration">Индивидуальный формат</p>
+          <p class="program-card__desc">
+            Прокачаем команду аналитиков вашей компании: от воркшопов до долгосрочного менторинга.
+          </p>
+          <ul class="program-card__features">
+            <li>Аудит процессов команды</li>
+            <li>Воркшопы и мастер-классы</li>
+            <li>Менторинг команды</li>
+            <li>Внедрение практик и шаблонов</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline-dark">Обсудить</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="container">
+      <p class="section-eyebrow text-center">Как это работает</p>
+      <h2 class="section-title text-center">Путь к результату<br /><em>за 4 шага</em></h2>
+      <div class="process__steps">
+        <div class="process__step">
+          <div class="process__num">01</div>
+          <h4>Диагностика</h4>
+          <p>Анализируем ваш текущий уровень, цели и точки роста</p>
+        </div>
+        <div class="process__connector"></div>
+        <div class="process__step">
+          <div class="process__num">02</div>
+          <h4>Стратегия</h4>
+          <p>Создаём персональный план развития под ваши цели</p>
+        </div>
+        <div class="process__connector"></div>
+        <div class="process__step">
+          <div class="process__num">03</div>
+          <h4>Практика</h4>
+          <p>Работаем на реальных кейсах, разбираем ошибки и растём</p>
+        </div>
+        <div class="process__connector"></div>
+        <div class="process__step">
+          <div class="process__num">04</div>
+          <h4>Результат</h4>
+          <p>Выходите на рынок подготовленным и получаете оффер</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="results">
+    <div class="container">
+      <p class="section-eyebrow text-center">Результаты</p>
+      <h2 class="section-title text-center">Истории успеха<br /><em>моих учеников</em></h2>
+      <div class="testimonials__grid">
+
+        <div class="testimonial">
+          <div class="testimonial__stars">★★★★★</div>
+          <p class="testimonial__text">
+            «За 3 месяца я перешла из тестировщика в системного аналитика в Сбер.
+            Александр — это не просто ментор, это навигатор. Он помог мне структурировать знания
+            и выйти на совершенно другой уровень дохода.»
+          </p>
+          <div class="testimonial__author">
+            <div class="testimonial__avatar">АК</div>
+            <div>
+              <strong>Анна К.</strong>
+              <span>Системный аналитик · Сбер</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial">
+          <div class="testimonial__stars">★★★★★</div>
+          <p class="testimonial__text">
+            «Я думал, что знаю системный анализ. Оказалось — знал лишь верхушку айсберга.
+            Менторинг открыл мне DDD, Event Storming и правильную работу с требованиями.
+            Сейчас я Senior SA в Яндексе.»
+          </p>
+          <div class="testimonial__author">
+            <div class="testimonial__avatar">МП</div>
+            <div>
+              <strong>Михаил П.</strong>
+              <span>Senior SA · Яндекс</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial">
+          <div class="testimonial__stars">★★★★★</div>
+          <p class="testimonial__text">
+            «Александр помог мне пройти 8 технических интервью без единого отказа.
+            Его подход к подготовке — это система, которая реально работает.
+            Получила оффер от Ozon с зарплатой выше ожидаемой на 40%.»
+          </p>
+          <div class="testimonial__author">
+            <div class="testimonial__avatar">ЕВ</div>
+            <div>
+              <strong>Елена В.</strong>
+              <span>Middle SA · Ozon</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial">
+          <div class="testimonial__stars">★★★★★</div>
+          <p class="testimonial__text">
+            «Я уже был Middle-аналитиком, но застрял на одном месте 3 года.
+            После менторинга я вырос до Senior, поменял компанию и удвоил зарплату.
+            Лучшая инвестиция в карьеру.»
+          </p>
+          <div class="testimonial__author">
+            <div class="testimonial__avatar">ДС</div>
+            <div>
+              <strong>Дмитрий С.</strong>
+              <span>Senior SA · VK</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <p class="section-eyebrow text-center">Инвестиции</p>
+      <h2 class="section-title text-center">Прозрачные условия<br /><em>без скрытых платежей</em></h2>
+      <div class="pricing__grid">
+
+        <div class="pricing-card">
+          <h3>Диагностика</h3>
+          <div class="pricing-card__price">
+            <span class="price">5 000</span>
+            <span class="currency">₽</span>
+          </div>
+          <p class="pricing-card__per">разовая сессия</p>
+          <ul>
+            <li>1 встреча · 90 минут</li>
+            <li>Аудит резюме и портфолио</li>
+            <li>Персональный roadmap</li>
+            <li>Запись встречи</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline-dark">Выбрать</a>
+        </div>
+
+        <div class="pricing-card pricing-card--featured">
+          <div class="pricing-card__popular">Рекомендую</div>
+          <h3>Менторинг 3 месяца</h3>
+          <div class="pricing-card__price">
+            <span class="price">75 000</span>
+            <span class="currency">₽</span>
+          </div>
+          <p class="pricing-card__per">полная программа</p>
+          <ul>
+            <li>24 персональных встречи</li>
+            <li>Практические задания</li>
+            <li>Подготовка к интервью</li>
+            <li>Работа с резюме</li>
+            <li>Чат-поддержка</li>
+            <li>Гарантия сопровождения до оффера</li>
+          </ul>
+          <a href="#contact" class="btn btn--gold">Начать сейчас</a>
+        </div>
+
+        <div class="pricing-card">
+          <h3>Корпоративный</h3>
+          <div class="pricing-card__price">
+            <span class="price">По запросу</span>
+          </div>
+          <p class="pricing-card__per">индивидуально</p>
+          <ul>
+            <li>Аудит команды</li>
+            <li>Воркшопы и тренинги</li>
+            <li>Менторинг команды</li>
+            <li>Внедрение практик</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline-dark">Обсудить</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="cta-banner__bg"></div>
+    <div class="container">
+      <h2>Готовы изменить свою карьеру?</h2>
+      <p>Запишитесь на бесплатную 30-минутную консультацию и узнайте, как быстро достичь ваших целей.</p>
+      <a href="#contact" class="btn btn--gold btn--lg">Получить бесплатную консультацию</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact__grid">
+        <div class="contact__info">
+          <p class="section-eyebrow">Контакты</p>
+          <h2 class="section-title">Давайте<br /><em>поговорим</em></h2>
+          <p>Оставьте заявку и я свяжусь с вами в течение 24 часов для бесплатной консультации.</p>
+          <div class="contact__links">
+            <a href="#" class="contact__link">
+              <span class="contact__link-icon">✉</span>
+              mentor@saexpert.ru
+            </a>
+            <a href="#" class="contact__link">
+              <span class="contact__link-icon">✈</span>
+              Telegram: @sa_mentor
+            </a>
+          </div>
+        </div>
+        <form class="contact__form" id="contactForm">
+          <div class="form-group">
+            <input type="text" placeholder="Ваше имя" required />
+          </div>
+          <div class="form-group">
+            <input type="email" placeholder="Email" required />
+          </div>
+          <div class="form-group">
+            <input type="tel" placeholder="Телефон / Telegram" />
+          </div>
+          <div class="form-group">
+            <select>
+              <option value="" disabled selected>Интересующая программа</option>
+              <option>Экспресс-диагностика</option>
+              <option>Менторинг 3 месяца</option>
+              <option>Корпоративное обучение</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Расскажите о себе и своих целях" rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn--gold btn--full">Отправить заявку</button>
+          <p class="form-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <div class="footer__logo">АМ</div>
+          <p>Ментор и эксперт по системному анализу. Помогаю аналитикам расти и находить работу мечты.</p>
+        </div>
+        <div class="footer__nav">
+          <a href="#about">Обо мне</a>
+          <a href="#programs">Программы</a>
+          <a href="#results">Результаты</a>
+          <a href="#pricing">Инвестиции</a>
+          <a href="#contact">Контакты</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 Александр Морозов. Все права защищены.</p>
+        <p><a href="#">Политика конфиденциальности</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal__box">
+      <div class="modal__icon">✓</div>
+      <h3>Заявка отправлена!</h3>
+      <p>Я свяжусь с вами в течение 24 часов.</p>
+      <button class="btn btn--gold" id="modalClose">Закрыть</button>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
