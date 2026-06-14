@@ -77,6 +77,14 @@ def update_last_message_id(channel_id, last_id) -> None:
             )
 
 
+def existing_post_ids(channel_id):
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT tg_message_id FROM posts WHERE channel_id=?", (channel_id,)
+        ).fetchall()
+        return {r["tg_message_id"] for r in rows}
+
+
 def insert_post(channel_id, post) -> None:
     with _conn() as conn:
         conn.execute(

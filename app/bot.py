@@ -16,7 +16,10 @@ HELP_TEXT = (
     "`https://t.me/friendshipwithbrain`\n\n"
     "Я заберу посты, вытащу факты, ссылки на исследования, техники и лайфхаки, "
     "сохраню в память и пришлю Markdown-файлы.\n\n"
+    "По умолчанию на первом разборе беру последние посты (быстро). "
+    "Чтобы выкачать **весь архив** канала — команда `/full`.\n\n"
     "Команды:\n"
+    "• `/full <канал>` — выкачать весь архив канала целиком\n"
     "• `/list` — какие каналы уже разобраны\n"
     "• `/digest <канал>` — прислать выжимку по каналу заново\n"
     "• `/search <слово>` — поиск по всей накопленной базе"
@@ -51,7 +54,7 @@ def _format_summary(channel_title, n_posts, counts) -> str:
     return "\n".join(lines)
 
 
-async def _process(event, user_client, ref):
+async def _process(event, user_client, ref, full=False):
     status = await event.respond(f"🔍 Открываю канал @{ref}…")
     try:
         entity = await user_client.get_entity(ref)
@@ -63,7 +66,12 @@ async def _process(event, user_client, ref):
     username = getattr(entity, "username", ref)
     channel_id, last_id = db.get_or_create_channel(entity.id, username, title)
 
-    posts = await collect_posts(user_client, entity, last_id)
+    if full:
+        await status.edit(f"📚 Выкачиваю весь архив «{title}» — это может занять время…")
+        known = db.existing_post_ids(channel_id)
+        posts = await collect_posts(user_client, entity, last_id, full=True, known_ids=known)
+    else:
+        posts = await collect_posts(user_client, entity, last_id)
     if not posts:
         await status.edit(f"✅ «{title}»: новых постов нет, всё уже разобрано.")
         return
@@ -138,6 +146,17 @@ def register_handlers(bot: TelegramClient, user_client: TelegramClient) -> None:
             src = f" — [источник]({url})" if url else ""
             lines.append(f"• [{title} · @{username}] {content}{src}")
         await event.respond("\n".join(lines), link_preview=False)
+        raise events.StopPropagation
+
+    @bot.on(events.NewMessage(pattern=r"^/full(?:\s+(.+))?"))
+    async def _full(event):
+        if not _is_allowed(event):
+            raise events.StopPropagation
+        ref = parse_channel_ref(event.pattern_match.group(1) or "")
+        if not ref:
+            await event.respond("Использование: `/full имя_канала` — выкачать весь архив")
+            raise events.StopPropagation
+        await _process(event, user_client, ref, full=True)
         raise events.StopPropagation
 
     @bot.on(events.NewMessage(pattern=r"^/digest(?:\s+(.+))?"))
