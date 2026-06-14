@@ -25,6 +25,9 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
+VK_ACCESS_TOKEN = os.getenv("VK_ACCESS_TOKEN", "")
+VK_API_VERSION = os.getenv("VK_API_VERSION", "5.199")
+
 DB_PATH = os.getenv("DB_PATH", "data/knowledge.db")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR", "output")
 USERBOT_SESSION = os.getenv("USERBOT_SESSION", "data/userbot")

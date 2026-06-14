@@ -4,7 +4,7 @@ import re
 
 from telethon import TelegramClient, events
 
-from app import config, db, youtube
+from app import config, db, vk, youtube
 from app.collector import collect_posts
 from app.extractor import extract_items
 from app.markdown_export import export_channel
@@ -14,7 +14,8 @@ HELP_TEXT = (
     "Привет! Я разбираю публичные каналы на полезные знания.\n\n"
     "Пришли мне ссылку:\n"
     "• Telegram-канал: `https://t.me/friendshipwithbrain`\n"
-    "• YouTube-канал: `https://youtube.com/@channel`\n\n"
+    "• YouTube-канал: `https://youtube.com/@channel`\n"
+    "• Стена ВК: `https://vk.com/public123`\n\n"
     "Я заберу посты/видео, вытащу факты, ссылки на исследования, техники и "
     "лайфхаки, сохраню в память и пришлю Markdown-файлы.\n\n"
     "По умолчанию беру свежие записи (быстро). Чтобы выкачать **весь архив** — "
@@ -35,6 +36,8 @@ def detect_platform(text: str) -> str:
     t = (text or "").lower()
     if "youtube.com" in t or "youtu.be" in t:
         return "youtube"
+    if "vk.com" in t or "vkontakte.ru" in t:
+        return "vk"
     return "telegram"
 
 
@@ -146,6 +149,38 @@ async def _process_youtube(event, url, full=False):
     await _finish(event, status, channel_id, username, title, posts, "видео", batch_size=1)
 
 
+async def _process_vk(event, url, full=False):
+    status = await event.respond("🔍 Открываю стену ВК…")
+    target = vk.parse_target(url)
+    if not target:
+        await status.edit("❌ Не понял ссылку ВК. Пример: `https://vk.com/public123`")
+        return
+    try:
+        ext_id, username, title = await asyncio.to_thread(vk.resolve, target)
+    except Exception as exc:  # noqa: BLE001
+        await status.edit(f"❌ Не смог открыть стену ВК: {exc}")
+        return
+
+    channel_id, last_id = db.get_or_create_channel("vk", ext_id, username, title)
+    known = db.existing_post_ids(channel_id) if full else frozenset()
+    if full:
+        await status.edit(f"📚 Выкачиваю всю стену «{title}» — это может занять время…")
+
+    try:
+        posts = await asyncio.to_thread(
+            vk.collect_wall, target, full, 0 if full else last_id, known
+        )
+    except Exception as exc:  # noqa: BLE001
+        await status.edit(f"❌ Ошибка при сборе стены: {exc}")
+        return
+
+    if posts:
+        new_last_id = max(int(p["ext_post_id"]) for p in posts)
+        db.update_last_message_id(channel_id, new_last_id)
+
+    await _finish(event, status, channel_id, username, title, posts, "постов", batch_size=None)
+
+
 def register_handlers(bot: TelegramClient, user_client: TelegramClient) -> None:
     @bot.on(events.NewMessage(pattern=r"^/(start|help)"))
     async def _help(event):
@@ -163,8 +198,9 @@ def register_handlers(bot: TelegramClient, user_client: TelegramClient) -> None:
             await event.respond("Пока ничего не разобрано. Пришли ссылку на канал.")
         else:
             lines = ["📚 Разобранные каналы:\n"]
+            icons = {"youtube": "▶️", "vk": "🅥", "telegram": "✈️"}
             for _cid, platform, username, title, n in channels:
-                icon = "▶️" if platform == "youtube" else "✈️"
+                icon = icons.get(platform, "•")
                 lines.append(f"{icon} «{title}» (@{username}) — {n} пунктов")
             await event.respond("\n".join(lines))
         raise events.StopPropagation
@@ -197,8 +233,11 @@ def register_handlers(bot: TelegramClient, user_client: TelegramClient) -> None:
         if not arg:
             await event.respond("Использование: `/full <ссылка на канал>`")
             raise events.StopPropagation
-        if detect_platform(arg) == "youtube":
+        platform = detect_platform(arg)
+        if platform == "youtube":
             await _process_youtube(event, arg, full=True)
+        elif platform == "vk":
+            await _process_vk(event, arg, full=True)
         else:
             ref = parse_channel_ref(arg)
             if not ref:
@@ -237,8 +276,12 @@ def register_handlers(bot: TelegramClient, user_client: TelegramClient) -> None:
         text = (event.raw_text or "").strip()
         if text.startswith("/"):
             return  # команды обрабатываются выше
-        if detect_platform(text) == "youtube":
+        platform = detect_platform(text)
+        if platform == "youtube":
             await _process_youtube(event, text)
+            return
+        if platform == "vk":
+            await _process_vk(event, text)
             return
         ref = parse_channel_ref(text)
         if not ref:
