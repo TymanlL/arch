@@ -38,9 +38,19 @@ SYSTEM_PROMPT = """Ты — ассистент, который извлекае�
 Поле "link" опционально. Если полезного нет — верни {"items":[]}."""
 
 
-def build_user_prompt(batch) -> str:
-    """Собирает пользовательское сообщение из пачки постов."""
-    parts = ["Проанализируй посты ниже. Каждый помечен своим post_id.\n"]
-    for post in batch:
-        parts.append(f"[post_id={post['tg_message_id']}]\n{post['text']}\n")
+def build_user_prompt(batch, max_chars) -> str:
+    """Собирает пользовательское сообщение из пачки источников.
+
+    Каждый элемент нумеруется локальным post_id (1..N) — модель возвращает его
+    обратно, а вызывающий код сопоставляет с реальным постом/видео.
+    """
+    parts = ["Проанализируй источники ниже. Каждый помечен своим post_id.\n"]
+    for idx, post in enumerate(batch, 1):
+        text = post.get("text", "")
+        if max_chars and len(text) > max_chars:
+            text = text[:max_chars] + " …[обрезано]"
+        header = f"[post_id={idx}]"
+        if post.get("title"):
+            header += f" «{post['title']}»"
+        parts.append(f"{header}\n{text}\n")
     return "\n".join(parts)

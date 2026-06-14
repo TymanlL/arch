@@ -1,4 +1,9 @@
-"""SQLite-хранилище: каналы, посты, извлечённые пункты («память»)."""
+"""SQLite-хранилище: каналы, посты/видео, извлечённые пункты («память»).
+
+Схема обобщена под несколько платформ (telegram, youtube, …):
+- channels.platform + channels.ext_id однозначно идентифицируют источник;
+- posts.ext_post_id — id поста (telegram) или видео (youtube), строкой.
+"""
 import datetime
 import os
 import sqlite3
@@ -8,25 +13,28 @@ from app import config
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS channels(
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    tg_id           INTEGER UNIQUE,
+    platform        TEXT,
+    ext_id          TEXT,
     username        TEXT,
     title           TEXT,
     last_message_id INTEGER DEFAULT 0,
-    added_at        TEXT
+    added_at        TEXT,
+    UNIQUE(platform, ext_id)
 );
 CREATE TABLE IF NOT EXISTS posts(
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    channel_id    INTEGER,
-    tg_message_id INTEGER,
-    date          TEXT,
-    text          TEXT,
-    url           TEXT,
-    UNIQUE(channel_id, tg_message_id)
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    channel_id   INTEGER,
+    ext_post_id  TEXT,
+    date         TEXT,
+    text         TEXT,
+    url          TEXT,
+    title        TEXT,
+    UNIQUE(channel_id, ext_post_id)
 );
 CREATE TABLE IF NOT EXISTS items(
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     channel_id  INTEGER,
-    post_tg_id  INTEGER,
+    post_ext_id TEXT,
     category    TEXT,
     content     TEXT,
     source_url  TEXT,
@@ -49,18 +57,20 @@ def init_db() -> None:
         conn.executescript(SCHEMA)
 
 
-def get_or_create_channel(tg_id, username, title):
+def get_or_create_channel(platform, ext_id, username, title):
     """Возвращает (channel_id, last_message_id)."""
+    ext_id = str(ext_id)
     with _conn() as conn:
         row = conn.execute(
-            "SELECT id, last_message_id FROM channels WHERE tg_id=?", (tg_id,)
+            "SELECT id, last_message_id FROM channels WHERE platform=? AND ext_id=?",
+            (platform, ext_id),
         ).fetchone()
         if row:
             return row["id"], row["last_message_id"] or 0
         cur = conn.execute(
-            "INSERT INTO channels(tg_id, username, title, last_message_id, added_at) "
-            "VALUES(?,?,?,0,?)",
-            (tg_id, username, title, datetime.datetime.utcnow().isoformat()),
+            "INSERT INTO channels(platform, ext_id, username, title, last_message_id, "
+            "added_at) VALUES(?,?,?,?,0,?)",
+            (platform, ext_id, username, title, datetime.datetime.utcnow().isoformat()),
         )
         return cur.lastrowid, 0
 
@@ -80,17 +90,24 @@ def update_last_message_id(channel_id, last_id) -> None:
 def existing_post_ids(channel_id):
     with _conn() as conn:
         rows = conn.execute(
-            "SELECT tg_message_id FROM posts WHERE channel_id=?", (channel_id,)
+            "SELECT ext_post_id FROM posts WHERE channel_id=?", (channel_id,)
         ).fetchall()
-        return {r["tg_message_id"] for r in rows}
+        return {r["ext_post_id"] for r in rows}
 
 
 def insert_post(channel_id, post) -> None:
     with _conn() as conn:
         conn.execute(
-            "INSERT OR IGNORE INTO posts(channel_id, tg_message_id, date, text, url) "
-            "VALUES(?,?,?,?,?)",
-            (channel_id, post["tg_message_id"], post["date"], post["text"], post["url"]),
+            "INSERT OR IGNORE INTO posts(channel_id, ext_post_id, date, text, url, title) "
+            "VALUES(?,?,?,?,?,?)",
+            (
+                channel_id,
+                post["ext_post_id"],
+                post.get("date", ""),
+                post.get("text", ""),
+                post.get("url", ""),
+                post.get("title"),
+            ),
         )
 
 
@@ -99,7 +116,7 @@ def _normalize(text: str) -> str:
     return " ".join((text or "").strip().lower().split())
 
 
-def insert_item(channel_id, post_tg_id, category, content, source_url, date) -> bool:
+def insert_item(channel_id, post_ext_id, category, content, source_url, date) -> bool:
     """Вставляет пункт, пропуская точные дубли. True, если реально добавлен."""
     norm = _normalize(content)
     with _conn() as conn:
@@ -110,11 +127,11 @@ def insert_item(channel_id, post_tg_id, category, content, source_url, date) -> 
         if any(_normalize(r["content"]) == norm for r in existing):
             return False
         conn.execute(
-            "INSERT INTO items(channel_id, post_tg_id, category, content, source_url, "
+            "INSERT INTO items(channel_id, post_ext_id, category, content, source_url, "
             "date, created_at) VALUES(?,?,?,?,?,?,?)",
             (
                 channel_id,
-                post_tg_id,
+                str(post_ext_id),
                 category,
                 content,
                 source_url,
@@ -138,23 +155,30 @@ def items_for_channel(channel_id, category):
 def list_channels():
     with _conn() as conn:
         rows = conn.execute(
-            "SELECT id, username, title FROM channels ORDER BY added_at"
+            "SELECT id, platform, username, title FROM channels ORDER BY added_at"
         ).fetchall()
         out = []
         for r in rows:
             n = conn.execute(
                 "SELECT COUNT(*) AS n FROM items WHERE channel_id=?", (r["id"],)
             ).fetchone()["n"]
-            out.append((r["id"], r["username"], r["title"], n))
+            out.append((r["id"], r["platform"], r["username"], r["title"], n))
         return out
 
 
-def get_channel_by_username(username):
+def get_channel_by_username(username, platform=None):
     with _conn() as conn:
-        r = conn.execute(
-            "SELECT id, username, title FROM channels WHERE username=? COLLATE NOCASE",
-            (username,),
-        ).fetchone()
+        if platform:
+            r = conn.execute(
+                "SELECT id, username, title FROM channels "
+                "WHERE username=? COLLATE NOCASE AND platform=?",
+                (username, platform),
+            ).fetchone()
+        else:
+            r = conn.execute(
+                "SELECT id, username, title FROM channels WHERE username=? COLLATE NOCASE",
+                (username,),
+            ).fetchone()
         return (r["id"], r["username"], r["title"]) if r else None
 
 

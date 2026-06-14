@@ -9,10 +9,11 @@ def _post_from_msg(msg, entity):
     username = getattr(entity, "username", None)
     url = f"https://t.me/{username}/{msg.id}" if username else ""
     return {
-        "tg_message_id": msg.id,
+        "ext_post_id": str(msg.id),
         "text": text,
         "url": url,
         "date": msg.date.isoformat() if msg.date else "",
+        "title": None,
     }
 
 
@@ -27,10 +28,8 @@ async def collect_posts(user_client, entity, last_message_id, full=False, known_
     posts = []
     if full:
         async for msg in user_client.iter_messages(entity):  # весь архив, новые -> старые
-            if msg.id in known_ids:
-                continue
             post = _post_from_msg(msg, entity)
-            if post:
+            if post and post["ext_post_id"] not in known_ids:
                 posts.append(post)
         posts.reverse()  # старые -> новые
         return posts

@@ -32,6 +32,9 @@ BOT_SESSION = os.getenv("BOT_SESSION", "data/bot")
 
 INITIAL_FETCH_LIMIT = _int("INITIAL_FETCH_LIMIT", 150)
 EXTRACT_BATCH_SIZE = _int("EXTRACT_BATCH_SIZE", 10)
+# Максимум символов одного источника, отправляемого модели (защита от
+# гигантских расшифровок видео). Лишнее обрезается.
+EXTRACT_MAX_CHARS = _int("EXTRACT_MAX_CHARS", 16000)
 
 
 def validate() -> None:

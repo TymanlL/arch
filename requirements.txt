@@ -1,3 +1,5 @@
 telethon>=1.36,<2.0
 openai>=1.40
 python-dotenv>=1.0
+yt-dlp>=2024.1.1
+youtube-transcript-api>=0.6,<1.0
